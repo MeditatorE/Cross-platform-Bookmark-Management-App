@@ -1,0 +1,1 @@
+https://huggingface.co/BAAI/bge-base-zh-v1.5/tree/main
