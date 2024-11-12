@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Create Collection</title>
+</head>
+<body>
+    <h1>Create Collection</h1>
+    <form method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit">Create</button>
+        <a href="{% url 'collection-detail' profile_pk=view.kwargs.profile_pk folder_pk=view.kwargs.folder_pk pk=view.kwargs.pk %}" class="cancel-link">Cancel</a>
+    </form>
+</body>
+</html>

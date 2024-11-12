@@ -1,0 +1,141 @@
+<h1>Profile Detail</h1>
+
+<p>Profile: {{ profile.profileName }}</p>
+<p>Email: {{ profile.email }}</p>
+<p>Created at: {{ profile.createTime }}</p>
+
+<p>
+    <a href="{% url 'profile-list' %}">Back</a> |
+    <a href="{% url 'profile-update' pk=profile.pk %}">Edit</a> |
+    <a href="{% url 'profile-delete' pk=profile.pk %}">Delete</a>
+</p>
+
+<h2>Personal Folders</h2>
+{% if folders %}
+    <ul>
+        {% for folder in folders %}
+            <!-- 这里假设 folders 变量包含了用户自己的文件夹列表 -->
+            <li>
+                <a href="{% url 'folder-detail' profile_pk=profile.pk pk=folder.pk %}">{{ folder.folderName }}</a>
+            </li>
+        {% endfor %}
+    </ul>
+{% else %}
+    <p>No personal folders created by this profile.</p>
+{% endif %}
+
+<h2>Shared Folders</h2>
+{% if shared_folders %}
+    <ul>
+        {% for folder in shared_folders %}
+            <!-- 这里假设 shared_folders 变量包含了共享给用户的文件夹列表 -->
+            <li>
+                <a href="{% url 'folder-detail' profile_pk=profile.pk pk=folder.pk %}">{{ folder.folderName }}</a>
+            </li>
+        {% endfor %}
+    </ul>
+{% else %}
+    <p>No shared folders available for this profile.</p>
+{% endif %}
+
+<a href="{% url 'folder-create' profile_pk=profile.pk %}">Create Folder</a>
+<a href="{% url 'shared-folder-create' profile_pk=profile.pk %}">Create Shared Folder</a>
+
+<h2>Tags</h2>
+{% if tags %}
+    <ul>
+        {% for tag in tags %}
+            <!-- 这里假设 shared_folders 变量包含了共享给用户的文件夹列表 -->
+            <li>
+                <a href="{% url 'tag-update' profile_pk=profile.pk pk=tag.pk %}">{{ tag.tagName }}</a>
+            </li>
+        {% endfor %}
+    </ul>
+{% else %}
+    <p>No tags available for this profile.</p>
+{% endif %}
+
+<a href="{% url 'tag-create' profile_pk=profile.pk %}">Create Tag</a>
+
+<h3>Create New Collection</h3>
+<form method="post" action="{% url 'create_collection' profile.profileId %}">
+    <label>
+        {% csrf_token %}
+        <input type="text" name="header" placeholder="Collection Title" required>
+    </label>
+    <label>
+        <input type="url" name="url">
+    </label>
+    <button type="submit">Create Collection</button>
+</form>
+
+<h2>User Content Search</h2>
+<form method="GET" action="{% url 'profile-detail' profile.pk %}">
+    <input type="text" name="user_content_search" placeholder="Search folders or active collections..." value="{{ request.GET.user_content_search }}">
+    <button type="submit">Search</button>
+</form>
+
+{% if user_content_search_performed %}
+    {% if user_content_search_results %}
+        <h3>User Content Search Results:</h3>
+        <ul>
+        {% for item in user_content_search_results %}
+            <li>
+                {% if item.folderName %}
+                    Folder: <a href="{% url 'folder-detail' profile_pk=profile.pk pk=item.pk %}">{{ item.folderName }}</a>
+                {% else %}
+                    Collection: <a href="{% url 'collection-detail' profile_pk=profile.pk folder_pk=item.folderId.pk pk=item.pk %}">{{ item.header }}</a>
+                {% endif %}
+            </li>
+        {% endfor %}
+        </ul>
+    {% elif user_content_no_results %}
+        <p>No relevant content</p>
+        <h4>Most recent collections:</h4>
+        <ul>
+        {% for collection in latest_collections %}
+            <li><a href="{% url 'collection-detail' profile_pk=profile.pk folder_pk=collection.folderId.pk pk=collection.pk %}">{{ collection.header }}</a></li>
+        {% endfor %}
+        </ul>
+    {% endif %}
+{% endif %}
+
+<h2>Archive Search</h2>
+<form method="GET" action="{% url 'profile-detail' profile.pk %}">
+    <label>
+        <input type="text" name="archive_search" placeholder="Search archived collections..." value="{{ request.GET.archive_search }}">
+    </label>
+    <button type="submit">Search Archives</button>
+</form>
+
+{% if archive_search_performed %}
+    {% if archive_search_results %}
+        <h3>Archive Search Results:</h3>
+        <ul>
+        {% for item in archive_search_results %}
+            <li>
+                Archived Collection: <a href="{% url 'collection-detail' profile_pk=profile.pk folder_pk=item.folderId.pk pk=item.pk %}">{{ item.header }}</a>
+            </li>
+        {% endfor %}
+        </ul>
+    {% elif archive_no_results %}
+        <p>No relevant content</p>
+        <h4>Most recent collections:</h4>
+        <ul>
+        {% for collection in latest_collections %}
+            <li><a href="{% url 'collection-detail' profile_pk=profile.pk folder_pk=collection.folderId.pk pk=collection.pk %}">{{ collection.header }}</a></li>
+        {% endfor %}
+        </ul>
+    {% endif %}
+{% endif %}
+
+<h2>Collections without Folder</h2>
+{% if invisible_folder_collections %}
+    <ul>
+        {% for collection in invisible_folder_collections %}
+            <li>{{ collection.header }} - <a href="{{ collection.url }}" target="_blank">View</a></li>
+        {% endfor %}
+    </ul>
+{% else %}
+    <p>No collections in the invisible folder.</p>
+{% endif %}

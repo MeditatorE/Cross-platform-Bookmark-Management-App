@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Tag Update</title>
+</head>
+<body>
+    <h1>Update Tag</h1>
+    <form method="post" action="">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit">Update</button>
+        <a href="{% url 'profile-detail' pk=tag.profileId.pk%}">Cancel</a><br>
+        <a href="{% url 'tag-delete' profile_pk=tag.profileId.pk pk=tag.pk %}">delete</a>
+    </form>
+</body>
+</html>

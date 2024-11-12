@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Delete Profile Confirmation</title>
+</head>
+<body>
+    <h1>Delete Profile</h1>
+    <p>Are you sure you want to delete the profile "{{ object.profileName }}"?</p>
+    <form method="post">
+        {% csrf_token %}
+        <button type="submit">Yes, delete</button>
+        <a href="{% url 'profile-list' %}">Cancel</a>
+    </form>
+</body>
+</html>

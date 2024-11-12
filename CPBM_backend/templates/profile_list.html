@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Profile List</title>
+</head>
+<body>
+    <h1>Profile List</h1>
+
+    <form method="GET" action="{% url 'profile-list' %}">
+        <input type="text" name="search" placeholder="Search profiles..." value="{{ request.GET.search }}">
+        <button type="submit">Search</button>
+    </form>
+
+    <h2>Profiles</h2>
+    <ul>
+        {% for profile in profiles %}
+            <li>
+                <a href="{% url 'profile-detail' pk=profile.pk %}">{{ profile.profileName }}</a>
+            </li>
+        {% endfor %}
+    </ul>
+
+    <a href="{% url 'profile-create' %}">Create Profile</a>
+</body>
+</html>

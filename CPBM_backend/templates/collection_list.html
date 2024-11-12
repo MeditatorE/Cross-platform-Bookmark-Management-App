@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Collection List</title>
+</head>
+<p>
+    <a href="{% url 'profile-list' %}">Back</a>
+</p>
+<body>
+    <h1>Collections</h1>
+    <ul>
+        {% for collection in collections %}
+            <li>
+                <a href="{% url 'collection-detail' collection.profileId.pk collection.folderId.pk collection.pk %}">{{ collection.header }} ({{ collection.folderId.folderName }} - {{ collection.profileId.profileName }})</a>
+            </li>
+        {% endfor %}
+    </ul>
+</body>
+</html>

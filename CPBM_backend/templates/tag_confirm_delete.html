@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Delete Tag Confirmation</title>
+</head>
+<body>
+    <h1>Delete Collection</h1>
+    <p>Are you sure you want to delete the tag "{{ object.header }}"?</p>
+    <form method="post">
+        {% csrf_token %}
+        <button type="submit">Yes, delete</button>
+        <a href="{% url 'profile-detail' pk=tag.profileId.pk %}">Cancel</a>
+    </form>
+</body>
+</html>

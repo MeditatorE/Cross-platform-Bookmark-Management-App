@@ -1,0 +1,21 @@
+<h1>Folder Detail</h1>
+
+<p>Folder: {{ folder.folderName }}</p>
+<p>Label: {{ folder.label }}</p>
+
+<p>
+    <a href="{% url 'profile-detail' pk=folder.profileId.pk %}">Back</a> |
+    <a href="{% url 'folder-update' profile_pk=folder.profileId.pk pk=folder.pk %}">Edit</a> |
+    <a href="{% url 'folder-delete' profile_pk=folder.profileId.pk pk=folder.pk %}">Delete</a>
+</p>
+
+<h2>Collections</h2>
+<ul>
+    {% for collection in folder.collection_set.all %}
+        <li>
+            <a href="{% url 'collection-detail' profile_pk=folder.profileId.pk folder_pk=folder.pk pk=collection.pk %}">{{ collection.header }}</a>
+        </li>
+    {% endfor %}
+</ul>
+
+<a href="{% url 'collection-create' profile_pk=folder.profileId.pk folder_pk=folder.pk %}" class="create-collection-link">Create Collection</a>

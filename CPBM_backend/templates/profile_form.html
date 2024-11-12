@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>{% if profile.pk %}Edit Profile{% else %}Create Profile{% endif %}</title>
+</head>
+<body>
+    <h1>
+        {% if profile.pk %}
+            Edit Profile
+        {% else %}
+            Create Profile
+        {% endif %}
+    </h1>
+    <form method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit">Create</button>
+        {% if profile.pk %}
+            <a href="{% url 'profile-detail' pk=profile.pk %}">Cancel</a>
+        {% else %}
+            <a href="{% url 'profile-list' %}">Cancel</a>
+        {% endif %}
+    </form>
+</body>
+</html>

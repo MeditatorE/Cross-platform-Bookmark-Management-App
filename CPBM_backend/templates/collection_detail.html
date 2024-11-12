@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Collection Detail</title>
+</head>
+<body>
+    <h1>Collection Detail</h1>
+
+    <p>Header: {{ collection.header }}</p>
+    <p>URL: {{ collection.url }}</p>
+    <p>Created at: {{ collection.addtime }}</p>
+    <p>Archived: {{ collection.archived }}</p>
+
+    <p>
+        <a href="{% url 'folder-detail' profile_pk=view.kwargs.profile_pk pk=view.kwargs.folder_pk %}">Back</a>
+        <a href="{% url 'collection-update' profile_pk=collection.folderId.profileId.pk folder_pk=collection.folderId.pk pk=collection.pk %}">Edit</a>
+        <a href="{% url 'collection-delete' profile_pk=collection.folderId.profileId.pk folder_pk=collection.folderId.pk pk=collection.pk %}">Delete</a>
+    </p>
+
+</body>
+</html>

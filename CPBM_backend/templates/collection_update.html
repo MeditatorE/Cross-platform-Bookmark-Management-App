@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Update Collection</title>
+</head>
+<body>
+    <h1>Update Collection</h1>
+    <form method="post" action="">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit">Save</button>
+        <a href="{% url 'collection-list' profile_pk=profile_pk folder_pk=folder_pk %}">Cancel</a>
+    </form>
+</body>
+</html>
