@@ -1,0 +1,903 @@
+<template>
+	<view class="pages font-style">
+		<!-- #ifndef H5 -->
+		<statusBar></statusBar>
+		<!-- #endif -->
+
+		<!-- 导航栏组件 -->
+		<cmd-nav-bar 
+			:fixed="false" 
+			leftTitle="My Collection"
+			font-size="30cm"
+			iconTwo="add" 
+			font-color="#000"
+			background-color="#fff"
+			fontWeight="bold"
+			avatarUrl="/static/pic/LeftAccessory.png">
+		</cmd-nav-bar>
+		
+		<!-- 搜索功能 -->
+		<view class="uni-search-box">
+			<uni-search-bar v-model="keyword" ref="searchBar" radius="20" cancelButton="none" disabled :placeholder="inputPlaceholder" />
+			<view class="cover-search-bar" @click="searchClick"></view>
+		</view>
+		
+		<!-- 两个并排的按钮 -->
+		<view class="button-container">
+			<view class="big-button" @click="goToAllInfoPage">
+				<image src="/static/pic/icnTray.png" class="button-image" />
+				<text class="button-text">All</text>
+				<text class="button-number">3</text>
+			</view>
+			<view class="big-button" @click="goToArchivedInfoPage">
+				<image src="/static/pic/icnTray2.png" class="button-image" />
+				<text class="button-text">Archived</text>
+				<text class="button-number">0</text>
+			</view>
+		</view>
+		
+		<!-- 文件夹折叠 -->
+		<view class="collapse-wrapper">
+			<uni-collapse>
+				<view v-for="(folder, index) in folders" :key="index">
+					<view class="folder-header">
+						<text class="folder-title">{{ folder.name }}</text>
+						<uni-icons type="plus" size="30" class="add-button" @click="openAddItemDialog('folders', index)"></uni-icons>
+					</view>
+					<uni-collapse-item :title="folder.name">
+						<view class="folder-content">
+							<view v-for="(item, itemIndex) in folder.items" :key="itemIndex" class="swipe-item" @click="handleCollapseItemClickone(item)">
+								<uni-swipe-action-item :right-options="getRightOptions('folders', index, itemIndex)">
+									<view class="swipe-item-content" @click="navigateToGrid(item)">
+										<view class="item-left">
+											<view class="circle-image">
+												<image class="circle-image-icon" :src="item.icon"></image>
+											</view>
+											<view class="item-text">{{ item.name }}</view>
+										</view>
+									</view>
+								</uni-swipe-action-item>
+							</view>
+						</view>
+					</uni-collapse-item>
+				</view>
+			</uni-collapse>
+		</view>
+    
+		<view class="collapse-wrapper">
+			<uni-collapse>
+				<view v-for="(folder, index) in sharedFolders" :key="index">
+					<view class="folder-header">
+						<text class="folder-title">{{ folder.name }}</text>
+						<uni-icons type="plus" size="30" class="add-button" @click="openAddItemDialog('sharedFolders', index)"></uni-icons>
+					</view>
+					<uni-collapse-item :title="folder.name">
+						<view class="folder-content">
+							<view v-for="(item, itemIndex) in folder.items" :key="itemIndex" class="swipe-item" @click="handleCollapseItemClicktwo(item)">
+								<uni-swipe-action-item :right-options="getRightOptions('sharedFolders', index, itemIndex)">
+									<view class="swipe-item-content" @click="navigateToGrid(item)">
+										<view class="item-left">
+											<view class="circle-image">
+												<image class="circle-image-icon" :src="item.icon"></image>
+											</view>
+											<view class="item-text">{{ item.name }}</view>
+										</view>
+									</view>
+								</uni-swipe-action-item>
+							</view>
+						</view>
+					</uni-collapse-item>
+				</view>
+			</uni-collapse>
+		</view>
+  
+		<view class="collapse-wrapper">
+			<uni-collapse>
+				<view v-for="(folder, index) in utilities" :key="index">
+					<view class="folder-header">
+						<text class="folder-title">{{ folder.name }}</text>
+					</view>
+					<uni-collapse-item :title="folder.name">
+						<view class="folder-content">
+							<view v-for="(item, itemIndex) in folder.items" :key="itemIndex" class="swipe-item" @click="handleCollapseItemClick(item)">
+								<uni-swipe-action-item :right-options="getRightOptions('utilities', index, itemIndex)">
+									<view class="swipe-item-content" @click="navigateToGrid(item)">
+										<view class="item-left">
+											<view class="circle-image">
+												<image class="circle-image-icon" :src="item.icon"></image>
+											</view>
+											<view class="item-text">{{ item.name }}</view>
+										</view>
+									</view>
+								</uni-swipe-action-item>
+							</view>
+						</view>
+					</uni-collapse-item>
+				</view>
+			</uni-collapse>
+		</view>
+		
+		<!-- 新增文件夹弹窗 -->
+		<view v-if="showPopup" class="popup-container">
+			<view class="popup-header">
+				<button class="popup-button popup-button-cancel" @click="cancelAddItem">Cancel</button>
+				<text class="popup-title">Add Item</text>
+				<button class="popup-button popup-button-done" @click="addItem">Done</button>
+			</view>
+			<view class="add-item-form">
+				<view class="color-picker" @click="toggleColorPicker">🎨</view>
+				<input v-model="newItemName" placeholder="Enter item name" class="in"/>
+			</view>
+			<view v-if="showColorPicker" class="color-options">
+				<view v-for="color in colors" :key="color" :style="{ backgroundColor: color }" class="color-option" @click="selectColor(color)"></view>
+			</view>
+		</view>
+	</view>
+</template>
+
+
+<script>
+	import statusBar from "@/uni_modules/uni-nav-bar/components/uni-nav-bar/uni-status-bar";
+	import cmdNavBar from "@/components/cmd-nav-bar/cmd-nav-bar.vue";
+	import { mapState } from 'vuex';
+	import Gps from '@/uni_modules/json-gps/js_sdk/gps.js';
+	const gps = new Gps(), db = uniCloud.database();
+	
+	export default {
+		components: {
+			statusBar,
+			cmdNavBar
+		},
+		computed: {
+			inputPlaceholder(e) {
+				if (uni.getStorageSync('CURRENT_LANG') == "en") {
+					return 'Please enter the search content'
+				} else {
+					return 'Quick Search'
+				}
+			},
+			colList(){
+				return [
+					db.collection('opendb-news-articles').where(this.where).field('avatar,title,last_modify_date,user_id').getTemp(),
+					db.collection('uni-id-users').field('_id,nickname').getTemp()
+				]
+			}
+		},
+data() {
+    return {
+        where: '"article_status" == 1',
+        keyword: "",
+        showRefresh: false,
+        listHight: 0,
+        swipeOptions: [],
+        rightOptionsTemplate: [
+            {
+                text: 'Edit',
+                style: {
+                    backgroundColor: '#0C79FE',
+                    backgroundImage: '/static/pic/edit.png',
+                    backgroundSize: 'cover',
+                    backgroundRepeat: 'no-repeat',
+                    width: '100%',
+                    margin: '0'
+                },
+                click: (folderType, folderIndex, itemIndex) => this.handleEdit(folderType, folderIndex, itemIndex)
+            },
+            {
+                text: 'Archived',
+                style: {
+                    backgroundColor: '#979797',
+                    color: '#FFFFFF'
+                },
+                click: (folderType, folderIndex, itemIndex) => this.handleArchived(folderType, folderIndex, itemIndex)
+            },
+            {
+                text: 'Delete',
+                style: {
+                    backgroundColor: '#FF3B30',
+                    color: '#FFFFFF'
+                },
+                click: (folderType, folderIndex, itemIndex) => this.handleDelete(folderType, folderIndex, itemIndex)
+            }
+        ],
+        folders: [
+            {
+                name: 'Personal Folders',
+                isExpanded: false,
+                items: []
+            }
+        ],
+        sharedFolders: [
+            {
+                name: 'Shared Folders',
+                isExpanded: false,
+                items: []
+            }
+        ],
+        utilities: [
+            {
+                name: 'Utilities',
+                isExpanded: false,
+                items: [
+                    { name: 'Recently Deleted' }
+                ]
+            }
+        ],
+        showPopup: false,
+        newItemName: "",
+        currentFolderType: "",
+        currentFolderIndex: null,
+        showColorPicker: false,
+        selectedColor: '#F14C3C',
+        colors: ['#F14C3C', '#FFA033', '#F7CE45', '#5DC466', '#0C79FE', '#B67AD5', '#998667']
+    };
+},
+
+watch: {
+    keyword(keyword, oldValue) {
+        let where = '"article_status" == 1 ';
+        if (keyword) {
+            this.where = where + `&& /${keyword}/.test(title)`;
+        } else {
+            this.where = where;
+        }
+    }
+},
+async onReady() {
+    // #ifdef APP-NVUE
+    /* 可用窗口高度 - 搜索框高 - 状态栏高 */
+    this.listHight = uni.getSystemInfoSync().windowHeight - uni.getSystemInfoSync().statusBarHeight - 50 + 'px';
+    // #endif
+    // #ifndef APP-NVUE
+    this.listHight = 'auto'
+    // #endif
+    cdbRef = this.$refs.udb
+},
+async onShow() {
+    this.keyword = getApp().globalData.searchText
+    getApp().globalData.searchText = ''
+    // #ifndef H5
+    let location = await gps.getLocation({
+        geocode: true
+    })
+    this.getFolders()
+    this.getSharedFolders()  // 加载共享文件夹数据
+    // #endif
+},
+onLoad() {
+    cdbRef = this
+    this.listHight = uni.getSystemInfoSync().windowHeight - uni.upx2px(440)
+    this.getListData()
+},
+methods: {
+    async getFolders() {
+        try {
+            // 从本地存储中获取 uni_id
+            const uni_id = JSON.parse(uni.getStorageSync('uni_id'));
+            
+            // 构建请求的 URL
+            const url = `http://127.0.0.1:8000/backend/profile/${uni_id}/folders/`;
+
+            const { data } = await uni.request({
+                url: url,
+                method: 'GET',
+                header: {
+                    'content-type': 'application/json' // 默认值
+                }
+            });
+            console.log(data);
+            if (data && data.items) {
+                const folderItems = data.items.map(item => {
+                    return {
+                        name: item.folderName,
+                        icon: this.getIconForLabel(item.label),
+						folderId: item.folderId
+                    };
+                });
+                this.folders[0].items = folderItems;
+            }
+        } catch (error) {
+            console.error('error:', error);
+            uni.showToast({
+                title: 'error',
+                icon: 'none',
+                duration: 2000
+            });
+        }
+    },
+
+    async getSharedFolders() {
+        try {
+            // 从本地存储中获取 uni_id
+            const uni_id = JSON.parse(uni.getStorageSync('uni_id'));
+            
+            // 构建请求的 URL
+            const url = `http://127.0.0.1:8000/backend/profile/${uni_id}/sharefolders/`;
+
+            const { data } = await uni.request({
+                url: url,
+                method: 'GET',
+                header: {
+                    'content-type': 'application/json' // 默认值
+                }
+            });
+            console.log(data);
+            if (data && data.items) {
+                const sharedFolderItems = data.items.map(item => {
+                    return {
+                        name: item.folderName,
+                        icon: this.getIconForLabel(item.label),
+						folderId: item.folderId
+                    };
+                });
+                this.sharedFolders[0].items = sharedFolderItems;
+            }
+        } catch (error) {
+            console.error('获取共享文件夹失败:', error);
+            uni.showToast({
+                title: '网络错误',
+                icon: 'none',
+                duration: 2000
+            });
+        }
+    },
+
+    getIconForLabel(label) {
+        
+        const iconMapping = {
+            'Yellow': '/static/pic/clr5.png',  // 在这里添加其他 label 到 icon 的映射
+            'Red': '/static/pic/clr3.png',
+            'Blue': '/static/pic/clr.png',
+            'Green': '/static/pic/clr2.png',
+            'Purple': '/static/pic/clr6.png',
+            'Brown': '/static/pic/clr7.png',
+        };
+        return iconMapping[label] || '/static/pic/default.png'; // 如果没有找到 label 对应的 icon，使用默认图标
+    },
+			goToAllInfoPage() {
+				uni.navigateTo({
+					url: '/pages/list/all/all'
+				});
+			},
+			goToArchivedInfoPage() {
+				uni.navigateTo({
+					url: '/pages/list/archived/archived'
+				});
+			},
+			navigateToGrid() {
+				uni.navigateTo({
+					url: '/pages/grid/grid'
+				});
+			},
+			searchClick() {
+				uni.hideKeyboard();
+				uni.navigateTo({
+					url: '/pages/list/search/search',
+					animationType: 'fade-in'
+				});
+			},
+			retry() {
+				this.refresh()
+			},
+			refresh() {
+				cdbRef.loadData({
+					clear: true
+				}, () => {
+					uni.stopPullDownRefresh()
+					// #ifdef APP-NVUE
+					this.showRefresh = false
+					// #endif
+				})
+			},
+			loadMore() {
+				cdbRef.loadMore()
+			},
+			onqueryerror(e) {
+				console.error(e);
+			},
+			onpullingdown(e) {
+				this.showRefresh = true
+				if (e.pullingDistance > 100) {
+					this.refresh()
+				}
+			},
+			handleCollapseItemClick(item) {
+				if (item.name === 'Recently Deleted') {
+					uni.navigateTo({
+						url: '/pages/list/delete/delete'
+					});
+				}
+			},
+			handleCollapseItemClickone(item) {	
+				uni.navigateTo({
+					url: '/pages/list/grid/grid'
+				});
+				/*
+				if (item.name === 'Folder') {
+					uni.navigateTo({
+						url: '/pages/list/grid/grid'
+					});
+				}
+				*/
+			},
+			handleCollapseItemClicktwo(item) {
+				uni.navigateTo({
+					url: '/pages/list/gridmul/gridmul'
+				});
+				/*
+				if (item.name === 'Shared Folder') {
+					uni.navigateTo({
+						url: '/pages/list/gridmul/gridmul'
+					});
+				}
+				*/
+			},
+			openAddItemDialog(folderType, index) {
+				this.currentFolderType = folderType;
+				this.currentFolderIndex = index;
+				this.showPopup = true;
+			},
+			async addItem() {
+				if (this.newItemName.trim() !== "") {
+					// this[this.currentFolderType][this.currentFolderIndex].items.push({
+					// 	name: this.newItemName,
+					// 	icon: this.getColorIcon(this.selectedColor)
+					// });
+					
+					try {
+					    const { data } = await uni.request({
+					      url: 'http://127.0.0.1:8000/backend/profile/'+ JSON.parse(uni.getStorageSync('uni_id')) +'/folder/create/',
+					      method: 'POST',
+						  data: {
+							  	folderName: this.newItemName,
+							  	label: 'Yellow'
+						  },
+					      header: {
+					        'content-type': 'application/json' // 默认值
+					      }
+					    });
+						console.log(data);
+					    if (data && data.response) {
+						  this.getFolders()
+					    } 
+					  } catch (error) {
+					    uni.showToast({
+					      title: 'Network error',
+					      icon: 'none',
+					      duration: 2000
+					    });
+					  }
+					this.newItemName = "";
+					this.selectedColor = this.colors[0];
+					this.showPopup = false;
+				}
+			},
+			cancelAddItem() {
+				this.newItemName = "";
+				this.selectedColor = this.colors[0];
+				this.showPopup = false;
+			},
+			toggleColorPicker() {
+				this.showColorPicker = !this.showColorPicker;
+			},
+			selectColor(color) {
+				this.selectedColor = color;
+				this.showColorPicker = false;
+			},
+			getColorIcon(color) {
+				return color;
+			},
+			async getListData() {
+				const [err, res] = await uniCloud.database().collection('opendb-news-articles').where(this.where).field('avatar,title,last_modify_date,user_id').get()
+				if (res) {
+					this.swipeOptions = res.result.data
+				}
+			},
+			getRightOptions(folderType, folderIndex, itemIndex) {
+				return this.rightOptionsTemplate.map(option => {
+					return {
+						...option,
+						click: () => this[option.click](folderType, folderIndex, itemIndex)
+					}
+				});
+			},
+			handleEdit(folderType, folderIndex, itemIndex) {
+				this.showPopup = true;
+				console.log('Edit:', folderType, folderIndex, itemIndex);
+				// Handle edit action here
+				// this[folderType][folderIndex].items.splice(itemIndex, 1);
+			},
+			handleArchived(folderType, folderIndex, itemIndex) {
+				console.log('Archived:', folderType, folderIndex, itemIndex);
+				// Handle archived action here
+				 this[folderType][folderIndex].items.splice(itemIndex, 1);
+			},
+			handleDelete(folderType, folderIndex, itemIndex) {
+				console.log('Delete:', folderType, folderIndex, itemIndex);
+				
+				  const deletedItem = this[folderType][folderIndex].items.splice(itemIndex, 1)[0];
+				  if (this[folderType][folderIndex].items.length === 0) {
+				    this[folderType].splice(folderIndex, 1);
+				  }
+			}
+		},
+		// #ifndef APP-NVUE
+		onPullDownRefresh() {
+			this.refresh()
+		},
+		onReachBottom() {
+			this.loadMore()
+		}
+		// #endif
+	};
+</script>
+
+
+
+<style scoped>
+  /* #ifndef APP-NVUE */
+  view {
+    display: flex;
+    box-sizing: border-box;
+    flex-direction: column;
+  }
+  /* #endif */
+  .pages {
+    background-color: #F2F2F6;
+  }
+  
+  .cmd-nav-bar-left-title {
+    font-weight: bold;
+    font-size: 50cm;
+  }
+  
+  .cmd-nav-bar {
+    font-size: 50cm;
+    font-weight: bold;
+  }
+
+  .avatar {
+    width: 90rpx;
+    height: 90rpx;
+    margin-left: 600upx;
+    margin-bottom: 20upx;
+  }
+
+  .main {
+    justify-content: space-between;
+    flex: 1;
+  }
+
+  .title {
+    font-size: 55px;
+    font-weight: bold;
+  }
+
+  .info {
+    flex-direction: row;
+    justify-content: space-between;
+  }
+
+  .author,
+  .last_modify_date {
+    font-size: 14px;
+    color: #ACACB6;
+  }
+
+  .uni-search-box {
+    background-color: #F2F2F6;
+    position: sticky; 
+    height: 50px;
+    top: 0;
+    left: 0;
+    /* #ifndef APP-PLUS */
+    z-index: 9;
+    /* #endif */
+    /* #ifdef MP-WEIXIN */
+    width: 580rpx;
+    /* #endif */
+  }
+  .cover-search-bar {
+    height: 50px;
+    position: relative;
+    top: -50px;
+    margin-bottom: -50px;
+    /* #ifndef APP-NVUE */
+    z-index: 999;
+    /* #endif */
+    
+  }
+  
+  .button-container {
+    flex-direction: row;
+    display: flex;
+    justify-content: space-between;
+    padding-left: 13px;
+    padding-right: 13px;
+    padding-bottom: 20px;
+    padding-top: 20px;
+    flex-wrap: wrap;
+    position: relative;
+  }
+
+  .big-button {
+    flex: 1;
+    width: 150px;
+    height: 100px;
+    background-color: #fff;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: center;
+    border-radius: 10px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    margin: 0 8px;
+  }
+
+  .button-image {
+    width: 36px;
+    height: 36px;
+    margin-bottom: 13px;
+    margin-left: 12px;
+  }
+
+  .button-text {
+    font-size: 18px;
+    font-weight: bold;
+    color: #8E8E92;
+    margin-left: 16px;
+  }
+
+  .button-number {
+    position: absolute;
+    right: 13px; 
+    top: 22%;
+    transform: translateY(-50%);
+    font-size: 26px;
+    font-weight: bold;
+  }
+  
+  .swipe-item {
+    margin-bottom: 10px;
+    font-size: 14px;
+	height: 45px;
+	margin-left: -10px;
+  }
+  
+  .swipe-item-content {
+    width: 365px;
+    height: 45px;
+    padding: 20px;
+    background-color: #fff;
+    border-radius: 8px; 
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); 
+    margin-bottom: 10px;
+    justify-content: center;
+    align-items: left;
+    font-size: 14px;/*折叠的字体*/
+    overflow: hidden;
+  }
+
+  .uni-swipe_button-group {
+    display: flex;
+    box-sizing: border-box;
+    justify-content: space-between;
+	margin-left: 10px;
+	font-size: 12px;
+  }
+
+  .uni-swipe_button {
+    width: 85px;
+    height: 50px;
+    line-height: 100%;
+    text-align: center;
+    background-color: #f1f1f1;
+    color: #333;
+    font-size: 12px; /*滑动的字体*/
+    padding: 0 16px;
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	
+  }
+  
+  .uni-swipe-button image {
+    width: 100%;
+    height: 100%;
+    border-radius: 10px;
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+  }
+
+  .swipe-item-content {
+    display: flex;
+    align-items: flex-start;/* 文字图片居左 */
+	
+  }
+
+  .item-left {
+    flex-direction: row; /* 文字图片在一行 */
+    display: flex;
+    align-items: flex-start; /* 文字图片居左 */
+  }
+
+  .circle-image {
+    width: 40rpx;
+    height: 40rpx;
+    border-radius: 50%;
+    background-color: #eee;
+    margin-right: 10rpx;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+
+  .circle-image-icon {
+    width: 30rpx;
+    height: 30rpx;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+  }
+
+  .item-text {
+    flex: 1;
+	font-size: 12px;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+  }
+
+.folder-header {
+  padding: 10px;
+  background-color: #F2F2F6;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-direction: row;
+}
+
+  .folder-title {
+  font-size: 20px;
+  font-weight: bold;
+  margin-bottom: 8px;
+  text-align: left;
+  flex: 1;
+  }
+  
+  .add-button {
+    font-size: 18px;
+    color: #007aff;
+    cursor: pointer;
+    margin-left: 10px;
+  }
+
+  .folder-content {
+  background-color: #F2F2F6;
+  padding: 10px;
+  border-radius: 10px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  }
+  
+  .collapse-wrapper {
+    margin-left: 12px;
+	width: 368px;
+	border-radius: 10px;
+  }
+  
+.popup-container {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background-color: #F2F2F6;
+  border-top-left-radius: 10px;
+  border-top-right-radius: 10px;
+  box-shadow: 0 -2px 8px rgba(0, 0, 0, 0.1);
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  
+}
+
+.popup-header {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 20px;
+  align-items: center;
+  flex-direction: row;
+  color: #fff;
+}
+
+.popup-title {
+  font-size: 18px;
+  font-weight: bold;
+  color: #000;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.popup-buttons {
+	width: 60px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+	color: #fff;
+	flex-direction: row;
+	font-size: 11px;
+}
+
+.popup-button {
+  margin-left: 10px;
+  padding: 10px 20px;
+  font-size: 11px;
+  border-radius: 5px;
+  cursor: pointer;
+  height: 35px;
+  width: 60px;
+  color: #fff;
+  
+}
+
+.popup-button-cancel {
+  background-color: #007aff;
+  font-size: 11px;
+  color: #fff;
+}
+
+.popup-button-done {
+  background-color: #007aff;
+  font-size: 11px;
+  color: #fff;
+}  
+
+.in {
+	flex: 1;
+	height: 50px;
+	width: 350px;
+	padding: 10px;
+	border: 1px solid #ccc;
+	border-radius: 10px;
+	background-color: #fff;
+	margin-bottom: 25px;
+	font-size: 15px;
+}
+
+.color-picker {
+  width:40px;
+  height: 40px;
+  margin-top: 5px;
+  margin-left: 10px;
+  margin-right: 10px;
+  cursor: pointer;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: #fff;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+}
+
+.color-options {
+  display: flex;
+  justify-content: space-around;
+  padding: 10px;
+  background-color: #fff;
+  border-radius: 5px;
+  margin-top: 10px;
+  flex-direction: row;
+}
+
+.color-option {
+  width: 30px;
+  height: 30px;
+  border-radius: 50px;
+  cursor: pointer;
+}
+
+.add-item-form {
+	flex-direction: row;
+}
+</style>
