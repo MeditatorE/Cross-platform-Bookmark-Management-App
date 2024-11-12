@@ -1,0 +1,42 @@
+/* Border Radius */
+view.data-v-40b82fe9 {
+  display: flex;
+  box-sizing: border-box;
+  flex-direction: column;
+}
+.root.data-v-40b82fe9 {
+  flex-direction: row;
+  align-items: center;
+  font-size: 12px;
+  color: #8a8f8b;
+}
+.checkbox-box.data-v-40b82fe9, .uni-label-pointer.data-v-40b82fe9 {
+  align-items: center;
+  display: flex;
+  flex-direction: row;
+}
+.item.data-v-40b82fe9 {
+  flex-direction: row;
+}
+.text.data-v-40b82fe9 {
+  line-height: 25px;
+}
+.agreement.data-v-40b82fe9 {
+  color: #04498c;
+  cursor: pointer;
+}
+.checkbox-box.data-v-40b82fe9 .uni-checkbox-input {
+  border-radius: 100%;
+}
+.checkbox-box.data-v-40b82fe9 .uni-checkbox-input.uni-checkbox-input-checked {
+  border-color: #007aff;
+  color: #FFFFFF !important;
+  background-color: #007aff;
+}
+.content.data-v-40b82fe9 {
+  flex-wrap: wrap;
+  flex-direction: row;
+}
+.root.data-v-40b82fe9 .uni-popup__error {
+  color: #333333;
+}

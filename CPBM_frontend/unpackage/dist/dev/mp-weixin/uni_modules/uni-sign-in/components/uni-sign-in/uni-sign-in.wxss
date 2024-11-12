@@ -1,0 +1,104 @@
+/* Border Radius */
+view {
+  display: flex;
+  box-sizing: border-box;
+  flex-direction: column;
+}
+scroll-view {
+  -webkit-overflow-scrolling: touch;
+}
+.background-img {
+  width: 600rpx;
+  height: 600rpx;
+}
+.content {
+  position: absolute;
+  width: 600rpx;
+  height: 600rpx;
+  justify-content: space-around;
+  align-items: center;
+  border-radius: 10px;
+  z-index: 5;
+}
+.background-img,
+.content {
+  top: 0;
+}
+.main {
+  align-items: center;
+}
+.title {
+  font-size: 44rpx;
+  color: #FFFFFF;
+  font-weight: 600;
+}
+.total {
+  background-color: #FFFFFF;
+  color: #ed5200;
+  text-align: center;
+  border-radius: 100px;
+  font-size: 30rpx;
+  margin: 16rpx 0;
+  width: 230rpx;
+}
+.scores {
+  text-align: center;
+  color: #FFFFFF;
+}
+.days-box {
+  flex-direction: row;
+}
+.days {
+  margin: 12rpx;
+  font-size: 19rpx;
+  justify-content: center;
+  align-items: center;
+  color: #f8692c;
+}
+.grey {
+  color: #C0C0C0;
+}
+.days-box .icon {
+  background-color: #feefeb;
+  border-radius: 100px;
+  height: 50rpx;
+  line-height: 50rpx;
+  text-align: center;
+  width: 50rpx;
+  margin-bottom: 6rpx;
+}
+.days-box .icon.active {
+  background-image: linear-gradient(to top, #FF9002, #FF5100);
+  background-color: #ffff7f;
+}
+.content,
+.days-box {
+  padding: 26rpx;
+}
+.tip-box {
+  justify-content: center;
+}
+.tip-box .row {
+  flex-direction: row;
+  justify-content: center;
+}
+.tip,
+.red {
+  text-align: center;
+  font-size: 24rpx;
+  color: #999999;
+  height: 30rpx;
+  line-height: 30rpx;
+}
+.red {
+  color: #ff0000;
+}
+.close-icon {
+  margin-bottom: -180rpx;
+  background-color: #FFFFFF;
+  border-radius: 100px;
+  text-align: center;
+  height: 46rpx;
+  line-height: 46rpx;
+  width: 46rpx;
+}

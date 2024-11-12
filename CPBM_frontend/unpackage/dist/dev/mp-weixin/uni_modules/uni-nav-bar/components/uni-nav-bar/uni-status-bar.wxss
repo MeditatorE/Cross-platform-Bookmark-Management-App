@@ -1,0 +1,4 @@
+/* Border Radius */
+.uni-status-bar {
+  height: 20px;
+}

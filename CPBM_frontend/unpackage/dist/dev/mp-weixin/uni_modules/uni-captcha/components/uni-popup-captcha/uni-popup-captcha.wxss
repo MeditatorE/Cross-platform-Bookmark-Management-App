@@ -1,0 +1,50 @@
+/* Border Radius */
+view.data-v-d021b99b {
+  display: flex;
+  flex-direction: column;
+}
+.popup-captcha.data-v-d021b99b {
+  display: flex;
+  max-width: 600px;
+  width: 600rpx;
+  padding-bottom: 0;
+  background-color: #FFF;
+  border-radius: 10px;
+  flex-direction: column;
+  position: relative;
+}
+.popup-captcha .content.data-v-d021b99b {
+  padding: 1.3em 0.8em;
+}
+.popup-captcha .title.data-v-d021b99b {
+  text-align: center;
+  word-wrap: break-word;
+  word-break: break-all;
+  white-space: pre-wrap;
+  font-weight: 400;
+  font-size: 18px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  color: #111;
+  margin-bottom: 15px;
+}
+.button-box.data-v-d021b99b {
+  height: 44px;
+  border-top: solid 1px #eee;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-around;
+}
+.button-box.data-v-d021b99b, .btn.data-v-d021b99b {
+  height: 44px;
+  line-height: 44px;
+}
+.button-box .btn.data-v-d021b99b {
+  flex: 1;
+  margin: 1px;
+  text-align: center;
+}
+.button-box .confirm.data-v-d021b99b {
+  color: #007aff;
+  border-left: solid 1px #eee;
+}

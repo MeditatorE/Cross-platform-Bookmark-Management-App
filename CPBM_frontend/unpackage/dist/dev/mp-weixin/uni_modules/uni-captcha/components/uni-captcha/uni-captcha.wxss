@@ -1,0 +1,53 @@
+/* Border Radius */
+.captcha-box.data-v-a00179ae {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: flex-end;
+  flex: 1;
+}
+.captcha-img-box.data-v-a00179ae,
+.captcha.data-v-a00179ae {
+  height: 44px;
+  line-height: 44px;
+}
+.captcha-img-box.data-v-a00179ae {
+  position: relative;
+  background-color: #FEFAE7;
+}
+.captcha.data-v-a00179ae {
+  background-color: #F8F8F8;
+  font-size: 14px;
+  flex: 1;
+  padding: 0 20rpx;
+  margin-left: 20rpx;
+  box-sizing: border-box;
+}
+.captcha-img-box.data-v-a00179ae,
+.captcha-img.data-v-a00179ae,
+.loding.data-v-a00179ae {
+  height: 44px !important;
+  width: 100px;
+}
+.captcha-img.data-v-a00179ae {
+  cursor: pointer;
+}
+.loding.data-v-a00179ae {
+  z-index: 9;
+  color: #bbb;
+  position: absolute;
+  text-align: center;
+  line-height: 45px;
+  animation: rotate-a00179ae 1s linear infinite;
+}
+.opacity.data-v-a00179ae {
+  opacity: 0.5;
+}
+@keyframes rotate-a00179ae {
+from {
+    transform: rotate(0deg);
+}
+to {
+    transform: rotate(360deg);
+}
+}

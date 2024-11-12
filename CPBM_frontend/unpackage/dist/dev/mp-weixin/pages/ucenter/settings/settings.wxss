@@ -1,0 +1,103 @@
+
+page {
+		flex: 1;
+		width: 100%;
+		height: 100%;
+		padding-right: 20px;
+}
+uni-button:after {
+		border: none;
+}
+.content {
+
+		display: flex;
+		width: 725rpx;
+		height: 100vh;
+
+		flex-direction: column;
+		flex: 1;
+		background-color: #F9F9F9;
+		padding: 15px;
+}
+.bottom-back {
+		margin-top: 20px;
+		width: 725rpx;
+		height: 44px;
+
+		display: flex;
+
+		flex-direction: column;
+		justify-content: center;
+		align-items: center;
+
+		border: none;
+
+		border-width: 0;
+		border-radius: 0;
+		background-color: #FFFFFF;
+		border-radius: 12px; /* Add border radius */
+}
+.bottom-back-text {
+		font-size: 35rpx;
+		border-radius: 12px; /* Add border radius */
+}
+.mt10 {
+		margin-top: 20px;
+		border-radius: 12px; /* Add border radius */
+}
+.icon {
+    width: 50px;
+    height: 50px;
+    margin-right: 15px;
+	margin-left: 45px;
+}
+.icons {
+    width: 30px;
+    height: 30px;
+    margin-right: 0px;
+  	margin-left: 25px;
+}
+.column-icon {
+      width: 22px;
+      height: 22px;
+      margin-right: 10px;
+}
+.wider-item {
+		width: calc(100% + 20px); /* Adjust this value as needed */
+		margin-left: -20px; /* Adjust this value as needed to center the wider item */
+		margin-right: 100px;
+		height: 100%; /* Ensure it takes full height of parent */
+		border-radius: 30px; /* Add border radius */
+}
+.item-content {
+		display: flex;
+		align-items: center;
+		height: 80px; /* Match the height of the uni-list-item */
+}
+.custom-list-item {
+	    display: flex;
+	    flex-direction: column;
+}
+.custom-list-item-column {
+	    line-height: 1.4;
+}
+.grey-text1 {
+		font-size: 16px;
+	    color: #808080;
+}
+.grey-text2 {
+		font-size: 14px;
+	    color: #808080;
+}
+.right-content {
+		flex: 0%;
+	    align-items: right;
+}
+.horizontal-container {
+		display: flex;
+		align-items: center;
+		height: 50px; /* Adjust the height as needed */
+		font-size: 25px; /* Adjust the font size as needed */
+		background-color: #FFFFFF; /* Ensure background color to separate from content */
+		border-radius: 15px; /* Add border radius */
+}

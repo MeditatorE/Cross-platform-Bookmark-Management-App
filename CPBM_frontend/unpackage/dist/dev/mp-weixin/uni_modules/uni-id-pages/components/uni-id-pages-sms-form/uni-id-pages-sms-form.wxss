@@ -1,0 +1,40 @@
+/* Border Radius */
+.box.data-v-4b649130 {
+  position: relative;
+  margin-top: 10px;
+}
+.short-code-btn.data-v-4b649130 {
+  padding: 0;
+  position: absolute;
+  top: 0;
+  right: 8px;
+  width: 260rpx;
+  max-width: 100px;
+  height: 44px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.inner-text.data-v-4b649130 {
+  font-size: 14px;
+  color: #AAAAAA;
+}
+.inner-text-active.data-v-4b649130 {
+  color: #04498c;
+}
+.captcha.data-v-4b649130 {
+  width: 350rpx;
+}
+.input-box.data-v-4b649130 {
+  margin: 0;
+  padding: 4px;
+  background-color: #F8F8F8;
+  font-size: 14px;
+}
+.box.data-v-4b649130 .content-clear-icon {
+  margin-right: 110px;
+}
+.box.data-v-4b649130 {
+  display: flex;
+  flex-direction: row;
+}

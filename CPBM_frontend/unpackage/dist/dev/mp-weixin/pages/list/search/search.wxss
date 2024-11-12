@@ -1,0 +1,117 @@
+@import "../../../nvue.wxss";
+
+page {
+		height: 100%;
+		flex: 1;
+}
+
+
+/* Border Radius */
+.status-bar.data-v-aaa8ea53 {
+  background-color: #fff;
+}
+.container.data-v-aaa8ea53 {
+  height: 100%;
+  flex: 1;
+  background-color: #f7f7f7;
+}
+.search-body.data-v-aaa8ea53 {
+  background-color: #fff;
+  border-bottom-right-radius: 10px;
+  border-bottom-left-radius: 10px;
+}
+.flex-center.data-v-aaa8ea53 {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.flex-row.data-v-aaa8ea53 {
+  display: flex;
+  flex-direction: row;
+}
+.uni-searchbar__box.data-v-aaa8ea53 {
+  border-width: 0;
+}
+.uni-input-placeholder.data-v-aaa8ea53 {
+  font-size: 28rpx;
+}
+.search-container.data-v-aaa8ea53 {
+  height: 52px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  position: relative;
+  background-color: #fff;
+}
+.search-container-bar.data-v-aaa8ea53 {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+}
+.search-associative.data-v-aaa8ea53 {
+  overflow-y: auto;
+  position: absolute;
+  top: 52px;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: #fff;
+  margin-top: 10rpx;
+  padding-left: 10rpx;
+  padding-right: 10rpx;
+}
+.search-icons.data-v-aaa8ea53 {
+  padding: 16rpx;
+}
+.word-display.data-v-aaa8ea53 {
+  font-size: 26rpx;
+  color: #666;
+}
+.word-container.data-v-aaa8ea53 {
+  padding: 20rpx;
+}
+.word-container_header.data-v-aaa8ea53 {
+  display: flex;
+  height: 72rpx;
+  line-height: 72rpx;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+}
+.word-container_header-text.data-v-aaa8ea53 {
+  color: #3e3e3e;
+  font-size: 30rpx;
+  font-weight: bold;
+}
+.word-container_body.data-v-aaa8ea53 {
+  display: flex;
+  flex-wrap: wrap;
+  flex-direction: row;
+}
+.word-container_body-text.data-v-aaa8ea53 {
+  display: flex;
+  font-size: 26rpx;
+  color: #666;
+  justify-content: center;
+  align-items: center;
+  background-color: #f6f6f6;
+  padding: 10rpx 20rpx;
+  margin: 20rpx 30rpx 0 0;
+  border-radius: 30rpx;
+  box-sizing: border-box;
+  text-align: center;
+}
+.word-container_body-info.data-v-aaa8ea53 {
+  display: block;
+  flex: 1;
+  text-align: center;
+  font-size: 26rpx;
+  color: #808080;
+  margin-top: 20rpx;
+}
