@@ -1,0 +1,1 @@
+<view class="{{[a, b]}}" style="{{c}}" bindtap="{{d}}"></view>
