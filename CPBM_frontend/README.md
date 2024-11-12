@@ -1,4 +1,4 @@
-# CoHub
+# Cross-platform Bookmark Management App
 
 CoHub is a cross-platform collection software designed to help users easily manage and synchronize their collections across multiple devices. The front end of this project uses HBuilderX IDE for Vue.js and UniApp framework development, supporting multiple platforms, including WeChat mini programs, H5, App, etc.
 
