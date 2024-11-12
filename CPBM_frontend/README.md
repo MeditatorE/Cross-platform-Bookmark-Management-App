@@ -22,7 +22,7 @@ Make sure the following tools are installed:
 
 ```bash
 git clone https://github.com/cooocoding/CoHub
-cd Cross-platform-Bookmark-Management-App
+cd Cross-platform-Bookmark-Management-App-main
 ```
 
 
