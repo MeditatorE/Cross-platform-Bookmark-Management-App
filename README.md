@@ -1,5 +1,5 @@
 # Cross platform Bookmark Management App
-# Members: Chen Sun, Haoran Liu
+### Members: Chen Sun, Haoran Liu
 ### About frontend
 Please click here for more details [**frontend info**](https://github.com/MeditatorE/Cross-platform-Bookmark-Management-App/tree/main/CPBM_frontend)
 
