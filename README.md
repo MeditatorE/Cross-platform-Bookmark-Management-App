@@ -1,6 +1,7 @@
 # Cross platform Bookmark Management App
 ### About the whole project
-Please click [📄 Project deyails](https://github.com/MeditatorE/Cross-platform-Bookmark-Management-App/blob/main/CoHub.pdf).
+Please click [📄 Project Details](https://github.com/MeditatorE/Cross-platform-Bookmark-Management-App/blob/main/CoHub.pdf)
+
 ### About frontend
 Please click here for more details [**frontend info**](https://github.com/MeditatorE/Cross-platform-Bookmark-Management-App/tree/main/CPBM_frontend)
 
